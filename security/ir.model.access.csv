@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_document_tags_user,access.document.tags.user,model_document_tags,document_management_app.group_document_user,1,1,1,0
+
+access_directory_tags_user,access.directory.tags.user,model_directory_tags,document_management_app.group_document_user,1,1,1,0
+
+access_directory_directory_user,access.directory.directory.user,model_directory_directory,document_management_app.group_document_user,1,1,1,0
+
+
+
+access_document_tags_manager,access.document.tags.manager,model_document_tags,document_management_app.group_document_manager,1,1,1,1
+
+access_directory_tags_manager,access.directory.tags.manager,model_directory_tags,document_management_app.group_document_manager,1,1,1,1
+
+access_directory_tags_manager,access.directory.tags.manager,model_directory_tags,document_management_app.group_document_manager,1,1,1,1
+
+access_directory_directory_manager,access.directory.directory.manager,model_directory_directory,document_management_app.group_document_manager,1,1,1,1

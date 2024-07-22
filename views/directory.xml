@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="directory_tag_form_view" model="ir.ui.view">
+            <field name="name">directory.tags.form</field>
+            <field name="model">directory.tags</field>
+            <field name="arch" type="xml">
+                <form name="directory_tag">
+                    <sheet>
+                        <group>
+                            <field name="name" required="1" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="directory_form_view" model="ir.ui.view">
+            <field name="name">directory.directory.form</field>
+            <field name="model">directory.directory</field>
+            <field name="arch" type="xml">
+                <form name="directory">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="get_file_list" type="object" icon="fa-file-text" attrs="{'invisible':[ ('file_count', '=', 0)]}" >
+                                <div class="o_field_widget o_stat_info">
+                                  <span class="o_stat_value">
+                                      <field name="file_count" widget="statinfo" nolabel="1" class="mr4"/>
+                                  </span>
+                                  <span class="o_stat_text">Files</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" name="get_sub_directories" type="object" icon="fa-folder-open" attrs="{'invisible':[ ('dir_count', '=', 0)]}" >
+                                <div class="o_field_widget o_stat_info">
+                                  <span class="o_stat_value">
+                                      <field name="dir_count" widget="statinfo" nolabel="1" class="mr4"/>
+                                  </span>
+                                  <span class="o_stat_text">Sub-Directories</span>
+                                </div>
+                            </button>
+                        </div>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_1920'}"/>
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="name" string="Directory Name"/>
+                        <h1><field name="name" placeholder="Name" class="oe_inline" required="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="file_count"/>
+                            <field name="dir_count"/>
+                            <field name="visible"/>
+                        </group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="date"/>
+                            <field name="tag_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                 <notebook>
+                    <page name="file_list" string="Files">
+                        <field name="file_ids">
+                            <tree>
+                                <field name="name"/>
+                                <field name="create_date"/> 
+                                <field name="datas" string="Data File"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page name="dir_list" string="Sub-Directories">
+                            <field name="sub_dir_ids">
+                                <tree>
+                                    <field name="name"/>
+                                     <field name="dir_count"/>
+                                    <field name="file_count"/>
+                                    <field name="date"/>
+                                    <button attrs="{'invisible': [('file_count','=',0)]}" class="oe_highlight" type="object" name="get_file_list" string="View Files"/>
+                                </tree>
+                            </field>
+                    </page>
+                </notebook>
+                    </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="directory_tree_view" model="ir.ui.view">
+            <field name="name">directory.directory.tree</field>
+            <field name="model">directory.directory</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="dir_count"/>
+                    <field name="file_count"/>
+                    <field name="date" string="Create Date"/>
+                    <button class="oe_highlight" type="object" name="get_file_list" string="View Files"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="directory_kanban_view" model="ir.ui.view">
+            <field name="name">directory.directory.kanban</field>
+            <field name="model">directory.directory</field>
+            <field name="arch" type="xml">
+                <kanban class="o_modules_kanban" import="false">
+                    <field name="name"/>    
+                    <field name="id"/>
+                    <field name="dir_count"/>
+                    <field name="file_count"/>       
+                    <field name="image_1920"/>
+                    <templates>                    
+                        <t t-name="kanban-box">
+                            <div class="oe_module_vignette oe_kanban_global_click">                      
+                                <t t-if="record.id">
+                                    <img t-att-src="kanban_image('directory.directory', 'image_1920', record.id.raw_value)" alt="Directory"  width="50" height="50"/>
+                                </t>        
+                                <div role="menuitem">
+                                </div>      
+                                <div class="oe_module_desc">
+                                    <h4 class="o_kanban_record_title" >
+                                        <field name="name"/>       
+                                    </h4>  
+
+                                    <h4 class="o_kanban_record_title" >
+                                        <field name="date"/>       
+                                    </h4>         
+                                    <div class="oe_module_action">
+                                        <button  class="btn-primary float-right oe_kanban_action oe_kanban_action_button" data-name="get_file_list"  data-type="object" attrs="{'invisible': [('file_count','=',0)]}">
+                                                    Files
+                                                    <field name="file_count"/> 
+                                        </button>
+                                        <button  class="btn-primary float-right oe_kanban_action oe_kanban_action_button" data-name="get_sub_directories"  data-type="object" attrs="{'invisible': [('dir_count','=',0)] }">
+                                                    Sub-Directories
+                                                    <field name="dir_count"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>  
+                        </t>    
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <record id="directory_search_view_inherit" model="ir.ui.view">
+            <field name="name">directory.directory.search</field>
+            <field name="model">directory.directory</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Visible Directory" name="visible" domain="[('visible','=',True)]" />
+                    <separator/>
+                    <filter string="My Directory" name="my_directory" domain="[('user_id','=',uid)]"/>
+                    
+                    <group expand="1" string="Group By">
+                        <!-- <field name="visible" invisible="1"/> -->
+                        <field name="user_id" invisible="1"/>
+                        <field name="parent_id" invisible="1"/>
+                        <field name="date" invisible="1"/>
+                        <filter name="groupby_parent" context="{'group_by' : 'parent_id'}" string="By Parent Directory"/>
+                        <filter name="groupby_date" context="{'group_by' : 'date'}" string="By Date"/>
+                        <separator/>
+                        <filter name="user_id" context="{'group_by' : 'user_id'}" string="By User"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_directory" model="ir.actions.act_window">
+            <field name="name">Directories</field>
+            <field name="res_model">directory.directory</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+        <record id="action_directory_tags" model="ir.actions.act_window">
+            <field name="name">Directory Tags</field>
+            <field name="res_model">directory.tags</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Documents Management"
+            id="menu_document"
+            groups="document_management_app.group_document_manager,document_management_app.group_document_user" sequence="1"/>
+
+        <menuitem id="configuration_menu" name="Configuration" groups="document_management_app.group_document_manager" parent="menu_document" sequence="4"/>
+
+        <menuitem id="menu_directories" name="Directories" parent="menu_document" sequence="2" action="action_directory"/>  
+        
+        <menuitem id="menu_directory_tags" 
+            name="Directory Tags" 
+            action="action_directory_tags"
+            parent="configuration_menu"/>
+
+
+</odoo>

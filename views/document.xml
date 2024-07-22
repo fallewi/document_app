@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="view_attachment_form_inherit" model="ir.ui.view">
+            <field name="name">ir.attachment.inherit</field>
+            <field name="model">ir.attachment</field>
+            <field name="inherit_id" ref="base.view_attachment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form//sheet" position="before">
+                    <header>
+                        <button name="action_document_send" string="Send by Email" type="object" class="btn-primary"/>
+                    </header>
+                </xpath>
+                <field name="mimetype" position="before">
+                    <field name="directory_id"/>
+                    <field name="visible"/>
+                    <field name="tag_ids" widget="many2many_tags"/>    
+                </field>
+            </field>
+        </record>
+
+        <!-- attachment search filter -->
+        <record id="attachment_search_filter" model="ir.ui.view">
+            <field name="model">ir.attachment</field>
+            <field name="inherit_id" ref="base.view_attachment_search"/>
+            <field name="arch" type="xml">
+                <filter name="my_documents_filter" position="after">
+                    <filter name="visible_documents"
+                        string="Visible Documents"
+                        domain="[('create_uid','=',uid)]"
+                        help="Filter on visible documents"/>
+                    </filter>
+                    <xpath expr="//group/filter[@name='owner']" position="after">
+                    <filter name="" string="Directory" context="{'group_by': 'directory_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- attachment action-send mail -->
+        <record id="action_document_attachment" model="ir.actions.act_window">
+            <field name="name">Documents/Attachments</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('visible','=',True)]</field>
+            <field name="context">{'default_visible':1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Attach a new
+                     attachment/document.
+                </p>
+            </field>
+        </record>
+
+        <!-- documents menu -->
+        <menuitem id="menu_document_management" name="Documents" parent="document_management_app.menu_document" action="document_management_app.action_document_attachment" sequence="3"/>
+
+        <!-- Share document  -->
+        <record id="action_attachment_share" model="ir.actions.server">
+            <field name="name">Share Document</field>
+            <field name="model_id" ref="base.model_ir_attachment"/>
+            <field name="binding_model_id" ref="base.model_ir_attachment"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_share()</field>
+        </record>
+
+        <!-- export zip file -->
+        <record id="action_export_document_zip" model="ir.actions.server">
+            <field name="name">Export to Zip File</field>
+            <field name="model_id" ref="base.model_ir_attachment" />
+            <field name="binding_model_id" ref="base.model_ir_attachment" />
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_document_download_zip()
+            </field>
+        </record>
+
+        <record id="document_tag_form_view" model="ir.ui.view">
+            <field name="name">document.tags.form</field>
+            <field name="model">document.tags</field>
+            <field name="arch" type="xml">
+                <form name="document_tag">
+                    <sheet>
+                        <group>
+                            <field name="name" required="1" />
+                            <field name="company_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="document_tag_tree_view" model="ir.ui.view">
+            <field name="name">document.tags.tree</field>
+            <field name="model">document.tags</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_document" model="ir.actions.act_window">
+            <field name="name">Documents/Attachments</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+        <!-- document tags -->
+        <record id="action_document_tags" model="ir.actions.act_window">
+            <field name="name">Document Tags</field>
+            <field name="res_model">document.tags</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_document_tags" 
+            name="Document Tags" 
+            action="action_document_tags"
+            parent="configuration_menu"/>
+
+</odoo>
